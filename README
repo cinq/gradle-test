@@ -1,0 +1,141 @@
+README - 2013-05-22
+
+Read this article and tried the code:
+http://java.dzone.com/articles/gradle-goodness-show-more
+
+Output from the different tests
+
+Output when the build.gradle did not contain the "test" specifications.
+
+-------------------------------------------------------------------------------------------------------------------
+[mc@inspiron gradle-test]$ gradle test
+:compileJava UP-TO-DATE
+:processResources UP-TO-DATE
+:classes UP-TO-DATE
+:compileTestJava
+Download http://repo1.maven.org/maven2/junit/junit/4.11/junit-4.11.pom
+Download http://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.pom
+Download http://repo1.maven.org/maven2/org/hamcrest/hamcrest-parent/1.3/hamcrest-parent-1.3.pom
+Download http://repo1.maven.org/maven2/junit/junit/4.11/junit-4.11.jar
+Download http://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+:processTestResources UP-TO-DATE
+:testClasses
+:test
+Test com.cinq.example.SampleTest FAILED
+1 test completed, 1 failure
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at /home/mc/code/gradle-test/build/reports/tests.
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 7.254 secs
+[mc@inspiron gradle-test]$ gradle test -i
+Starting Build
+Settings evaluated using empty settings script.
+Projects loaded. Root project using build file '/home/mc/code/gradle-test/build.gradle'.
+Included projects: [root project 'gradle-test']
+Evaluating root project 'gradle-test' using build file '/home/mc/code/gradle-test/build.gradle'.
+All projects evaluated.
+Selected primary task 'test'
+Tasks to be executed: [task ':compileJava', task ':processResources', task ':classes', task ':compileTestJava', task ':processTestResources', task ':testClasses', task ':test']
+:compileJava
+Skipping task ':compileJava' as it has no source files.
+:compileJava UP-TO-DATE
+:processResources
+Skipping task ':processResources' as it has no source files.
+:processResources UP-TO-DATE
+:classes
+Skipping task ':classes' as it has no actions.
+:classes UP-TO-DATE
+:compileTestJava
+impossible to define new type: class not found: org.apache.ivy.plugins.signer.bouncycastle.OpenPGPSignatureGenerator in [] nor Ivy classloader
+Skipping task ':compileTestJava' as it is up-to-date.
+Skipping task ':compileTestJava' as it is up-to-date
+:compileTestJava UP-TO-DATE
+:processTestResources
+Skipping task ':processTestResources' as it has no source files.
+:processTestResources UP-TO-DATE
+:testClasses
+Skipping task ':testClasses' as it has no actions.
+:testClasses UP-TO-DATE
+:test
+Executing task ':test' due to:
+No history is available for task ':test'.
+Gradle Worker 1 executing tests.
+Gradle Worker 1 finished executing tests.
+Test sample(com.cinq.example.SampleTest) FAILED: org.junit.ComparisonFailure: expected:<Martin is testing[ with gradle]> but was:<Martin is testing[]>
+Test com.cinq.example.SampleTest FAILED
+1 test completed, 1 failure
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at /home/mc/code/gradle-test/build/reports/tests.
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 4.516 secs
+[mc@inspiron gradle-test]$ 
+-------------------------------------------------------------------------------------------------------------------
+
+After we added the test exception format lines we get this output:
+
+-------------------------------------------------------------------------------------------------------------------
+[mc@inspiron gradle-test]$ /opt/gradle-1.6/bin/gradle test
+:compileJava UP-TO-DATE
+:processResources UP-TO-DATE
+:classes UP-TO-DATE
+:compileTestJava
+:processTestResources UP-TO-DATE
+:testClasses
+:test
+
+com.cinq.example.SampleTest > sample FAILED
+    org.junit.ComparisonFailure: expected:<Martin is testing[ with gradle]> but was:<Martin is testing[]>
+        at org.junit.Assert.assertEquals(Assert.java:115)
+        at org.junit.Assert.assertEquals(Assert.java:144)
+        at com.cinq.example.SampleTest.sample(SampleTest.java:9)
+
+1 test completed, 1 failed
+:test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mc/code/gradle-test/build/reports/tests/index.html
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 6.401 secs
+[mc@inspiron gradle-test]$ 
+-------------------------------------------------------------------------------------------------------------------
+
+
+Note:
+
+If you use the default gradle that intall with fc17 you only have gradle 1.0 which gives you this error when you try to test:
+
+-------------------------------------------------------------------------------------------------------------------
+[mc@inspiron gradle-test]$ gradle test
+Dynamic properties are deprecated: http://gradle.org/docs/current/dsl/org.gradle.api.plugins.ExtraPropertiesExtension.html
+Deprecated dynamic property: "exceptionFormat" on "root project 'gradle-test'", value: "full".
+...
+-------------------------------------------------------------------------------------------------------------------
+
+You need gradle 1.6 for this example to properly work.
+I found this reference usefull http://www.gradle.org/docs/current/dsl/
